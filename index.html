@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="NutriLife: consejos de nutrición, recetas saludables fáciles, actividad física sencilla y hábitos para vivir mejor.">
+<meta name="theme-color" content="#121212">
+<title>NutriLife | Información Nutricional</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+:root{--fondo:#121212;--fondo2:#1e1e1e;--tarjeta:#2a2a2a;--primario:#4ade80;--secundario:#22c55e;--acento:#f59e0b;--texto:#e5e5e5;--claro:#a3a3a3;--borde:#383838}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--fondo);color:var(--texto);line-height:1.7}
+p{margin-bottom:15px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--acento);outline-offset:2px}
+.saltar{position:absolute;left:-999px;background:var(--acento);color:#000;padding:8px 14px;z-index:200}
+.saltar:focus{left:10px;top:10px}
+
+nav{position:fixed;top:0;width:100%;background:rgba(18,18,18,.95);backdrop-filter:blur(8px);z-index:100;border-bottom:1px solid var(--borde)}
+.nav-contenido{max-width:1100px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{color:var(--primario);font-size:1.4em;font-weight:700}
+.nav-enlaces{display:none}
+.menu-toggle{font-size:1.8em;cursor:pointer;color:var(--texto);background:none;border:none}
+.menu-movil{display:none;flex-direction:column;background:var(--fondo2);border-bottom:1px solid var(--borde)}
+.menu-movil.abierto{display:flex}
+.menu-movil a{color:var(--texto);padding:12px 20px;text-decoration:none;border-bottom:1px solid var(--borde)}
+.menu-movil a:hover{background:var(--tarjeta);color:var(--primario)}
+
+.portada{margin-top:56px;background:linear-gradient(145deg,#1a3a1f,#244d2b);text-align:center;padding:60px 20px 80px}
+.portada h1{font-size:2.4em;margin-bottom:15px;color:var(--primario)}
+.portada p{font-size:1.1em;max-width:600px;margin:0 auto 25px;color:#d4d4d4}
+.boton{display:inline-block;background:var(--acento);color:#000;padding:12px 28px;border-radius:50px;text-decoration:none;font-weight:600;transition:transform .3s}
+.boton:hover{transform:translateY(-2px)}
+
+.seccion{max-width:1100px;margin:0 auto;padding:50px 22px}
+.fondo-alto{background:var(--fondo2);max-width:none}
+.fondo-alto>.interior{max-width:1100px;margin:0 auto}
+.titulo-seccion{text-align:center;font-size:1.8em;color:var(--primario);margin-bottom:12px}
+.subtitulo{text-align:center;color:var(--claro);margin:0 auto 35px;max-width:650px}
+
+.buscador{max-width:500px;margin:0 auto 35px;position:relative}
+.buscador input{width:100%;padding:14px 18px 14px 48px;background:var(--tarjeta);border:1px solid var(--borde);border-radius:50px;color:var(--texto);font-size:16px}
+.buscador span{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--claro)}
+#sinResultados{text-align:center;color:var(--claro);padding:30px;display:none}
+
+.tarjetas{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:600px){.tarjetas{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.tarjetas{grid-template-columns:repeat(3,1fr)}}
+.tarjeta{background:var(--tarjeta);border-radius:14px;padding:22px;border:1px solid var(--borde);transition:transform .3s,border-color .3s}
+.tarjeta:hover{transform:translateY(-4px);border-color:var(--primario)}
+.tarjeta h3{color:var(--primario);margin-bottom:10px}
+.icono{font-size:2em;margin-bottom:10px}
+.ing{font-size:.93em;color:var(--claro);margin:10px 0}
+.pasos{font-size:.93em}
+.pasos strong{color:var(--secundario)}
+.tiempo{display:inline-block;background:rgba(245,158,11,.15);color:var(--acento);border-radius:20px;padding:2px 12px;font-size:.85em;margin-top:6px}
+
+.destacado{background:rgba(74,222,128,.08);border-left:4px solid var(--primario);padding:18px;border-radius:0 8px 8px 0;margin:20px 0}
+.dos-columnas{display:grid;grid-template-columns:1fr;gap:25px}
+
+.progreso{max-width:500px;margin:0 auto 25px;text-align:center;color:var(--claro)}
+.barra{height:10px;background:var(--tarjeta);border-radius:10px;overflow:hidden;margin-top:8px}
+.barra div{height:100%;width:0;background:var(--primario);transition:width .4s}
+.habitos{list-style:none;max-width:700px;margin:0 auto;display:grid;gap:12px}
+.habitos label{display:flex;gap:14px;align-items:flex-start;background:var(--tarjeta);border:1px solid var(--borde);border-radius:12px;padding:16px;cursor:pointer}
+.habitos input{width:22px;height:22px;accent-color:var(--primario);flex-shrink:0;margin-top:3px}
+.habitos input:checked+span{color:var(--claro);text-decoration:line-through}
+.habitos b{display:block;color:var(--primario)}
+
+.filtros{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:-15px auto 30px;max-width:700px}
+.chip{background:var(--tarjeta);color:var(--texto);border:1px solid var(--borde);border-radius:50px;padding:8px 16px;font-size:.95em;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--primario);color:#000;border-color:var(--primario);font-weight:600}
+.acciones{display:flex;gap:10px;margin-top:14px;align-items:center}
+.fav,.wa{background:var(--fondo2);color:var(--texto);border:1px solid var(--borde);border-radius:50px;padding:6px 14px;font-size:.9em;cursor:pointer;text-decoration:none}
+.fav{font-size:1.1em}
+.fav[aria-pressed="true"]{border-color:#f87171}
+.wa:hover,.fav:hover{border-color:var(--primario)}
+.calc{max-width:420px;margin:0 auto;background:var(--tarjeta);border:1px solid var(--borde);border-radius:14px;padding:24px;text-align:center}
+.calc label{display:block;margin-bottom:8px;color:var(--claro)}
+.calc input{width:100%;padding:12px 16px;background:var(--fondo2);border:1px solid var(--borde);border-radius:12px;color:var(--texto);font-size:16px;margin-bottom:16px;text-align:center}
+.calc button{border:none;cursor:pointer;font-size:1em}
+#resAgua{margin:18px 0 0;color:var(--primario);font-size:1.1em}
+#resAgua small{display:block;color:var(--claro);font-size:.8em;margin-top:8px}
+.arriba{position:fixed;right:18px;bottom:18px;width:48px;height:48px;border-radius:50%;border:none;background:var(--acento);color:#000;font-size:1.4em;cursor:pointer;z-index:90;box-shadow:0 4px 12px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s}
+.arriba.ver{opacity:1;pointer-events:auto}
+footer{background:#0a0a0a;color:var(--claro);padding:35px 25px;border-top:1px solid var(--borde);text-align:center;font-size:.9em}
+footer p{max-width:700px;margin:0 auto 10px}
+
+@media(min-width:768px){
+.dos-columnas{grid-template-columns:1fr 1fr}
+.nav-enlaces{display:flex;gap:20px}
+.nav-enlaces a{color:var(--texto);text-decoration:none}
+.nav-enlaces a:hover{color:var(--primario)}
+.menu-toggle{display:none}
+}
+.js .aparece{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
+.js .aparece.visible{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.js .aparece{opacity:1;transform:none}}
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<nav>
+ <div class="nav-contenido">
+  <div class="nav-logo">🥗 NutriLife</div>
+  <div class="nav-enlaces">
+   <a href="#inicio">Inicio</a><a href="#importancia">Nutrición</a><a href="#alimentos">Alimentos</a><a href="#actividad">Actividad</a><a href="#habitos">Hábitos</a><a href="#agua">Agua</a>
+  </div>
+  <button class="menu-toggle" id="menuBtn" aria-label="Abrir menú" aria-expanded="false" aria-controls="menuMovil">☰</button>
+ </div>
+ <div class="menu-movil" id="menuMovil">
+  <a href="#inicio">🏠 Inicio</a><a href="#importancia">💡 ¿Por qué nutrición?</a><a href="#alimentos">🥗 Alimentos saludables</a><a href="#actividad">🏃 Actividad física</a><a href="#habitos">✅ Hábitos</a><a href="#agua">💧 Calculadora de agua</a>
+ </div>
+</nav>
+
+<main id="contenido">
+<section class="portada" id="inicio">
+ <h1>🌿 Bienvenido a NutriLife</h1>
+ <p>Te damos una cordial bienvenida a tu espacio de información nutricional. Aquí encontrarás consejos prácticos, recetas sencillas y todo lo que necesitas para llevar un estilo de vida más saludable. ¡Gracias por estar aquí! 💚</p>
+ <a href="#alimentos" class="boton">Ver alimentos saludables ↓</a>
+</section>
+
+<section class="seccion aparece" id="importancia">
+ <h2 class="titulo-seccion">💡 ¿Por qué es importante una nutrición sana?</h2>
+ <p class="subtitulo">La alimentación es la base de tu bienestar físico y mental.</p>
+ <div class="dos-columnas">
+  <div>
+   <p>Una buena alimentación es uno de los pilares de la salud. Lo que comemos influye en nuestra energía, estado de ánimo, concentración y defensas.</p>
+   <div class="destacado"><strong>💡 Recuerda:</strong> No se trata de comer menos, sino de comer mejor. Comer sano no tiene que ser costoso ni complicado: con pequeños cambios logras grandes beneficios.</div>
+   <p>Una dieta equilibrada ayuda a reducir el riesgo de enfermedades como diabetes, hipertensión y problemas del corazón.</p>
+  </div>
+  <div class="tarjetas">
+   <div class="tarjeta"><div class="icono">⚡</div><h3>Más energía</h3><p>Te mantiene activo durante todo el día.</p></div>
+   <div class="tarjeta"><div class="icono">🛡️</div><h3>Defensas fuertes</h3><p>Frutas y verduras apoyan tu sistema inmunológico.</p></div>
+   <div class="tarjeta"><div class="icono">🧠</div><h3>Claridad mental</h3><p>Mejora tu concentración y tu estado de ánimo.</p></div>
+   <div class="tarjeta"><div class="icono">❤️</div><h3>Salud a largo plazo</h3><p>Cuida tu corazón y previene enfermedades crónicas.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="seccion fondo-alto aparece" id="alimentos">
+ <div class="interior">
+  <h2 class="titulo-seccion">🥗 Alimentos saludables</h2>
+  <p class="subtitulo">Ideas fáciles de preparar. Busca por nombre o ingrediente.</p>
+  <div class="buscador">
+   <span aria-hidden="true">🔍</span>
+   <input type="search" id="buscar" aria-label="Buscar recetas" placeholder="Buscar receta o ingrediente...">
+  </div>
+  <div class="filtros" id="filtros" role="group" aria-label="Filtrar por categoría"></div>
+  <p id="sinResultados" role="status">No se encontraron recetas. Intenta con otra palabra 🔍</p>
+  <div id="listaRecetas" class="tarjetas"></div>
+ </div>
+</section>
+
+<section class="seccion aparece" id="actividad">
+ <h2 class="titulo-seccion">🏃 Actividad física sencilla y práctica</h2>
+ <p class="subtitulo">No necesitas gimnasio ni equipo especial. Moverte un poco cada día ya cuenta.</p>
+ <div class="destacado"><strong>🎯 Meta general:</strong> los adultos se benefician de al menos 150 minutos de actividad moderada por semana (por ejemplo, 30 minutos, 5 días). Empieza poco a poco y aumenta con el tiempo.</div>
+ <div class="tarjetas">
+  <div class="tarjeta"><div class="icono">🚶</div><h3>Caminar</h3><p>Sal a caminar a paso ligero después de comer o de camino al trabajo.</p><span class="tiempo">20–30 min</span></div>
+  <div class="tarjeta"><div class="icono">🪜</div><h3>Usar escaleras</h3><p>Elige las escaleras en lugar del ascensor cuando sea posible.</p><span class="tiempo">5–10 min</span></div>
+  <div class="tarjeta"><div class="icono">🧘</div><h3>Estiramientos</h3><p>Estira cuello, hombros y espalda al levantarte y antes de dormir.</p><span class="tiempo">10 min</span></div>
+  <div class="tarjeta"><div class="icono">💃</div><h3>Bailar</h3><p>Pon tu música favorita y muévete en casa. ¡Es ejercicio y diversión!</p><span class="tiempo">15–30 min</span></div>
+  <div class="tarjeta"><div class="icono">🏋️</div><h3>Fuerza en casa</h3><p>Sentadillas, flexiones apoyando las rodillas y plancha, con calma y buena postura.</p><span class="tiempo">15 min</span></div>
+  <div class="tarjeta"><div class="icono">⏰</div><h3>Pausas activas</h3><p>Si trabajas sentado, levántate y camina unos minutos cada hora.</p><span class="tiempo">3–5 min</span></div>
+ </div>
+</section>
+
+<section class="seccion fondo-alto aparece" id="habitos">
+ <div class="interior">
+  <h2 class="titulo-seccion">✅ Hábitos saludables</h2>
+  <p class="subtitulo">Marca los que lograste hoy. Se guardan en tu dispositivo y se reinician cada día.</p>
+  <div class="progreso"><span id="textoProgreso">0 de 6 completados</span><div class="barra"><div id="barraProgreso"></div></div></div>
+  <ul class="habitos" id="listaHabitos"></ul>
+ </div>
+</section>
+<section class="seccion aparece" id="agua">
+ <h2 class="titulo-seccion">💧 Calculadora de agua diaria</h2>
+ <p class="subtitulo">Un cálculo aproximado según tu peso. Cada persona es distinta.</p>
+ <div class="calc">
+  <label for="peso">Tu peso (kg)</label>
+  <input type="number" id="peso" min="20" max="250" inputmode="decimal" placeholder="Ej: 65">
+  <button class="boton" id="calcAgua" type="button">Calcular</button>
+  <p id="resAgua" role="status"></p>
+ </div>
+</section>
+</main>
+
+<footer>
+ <p>🥗 <strong>NutriLife</strong> — Gracias por visitarnos. ¡Cuidarte es el mejor regalo!</p>
+ <p>La información de este sitio es educativa y no sustituye la consulta con un médico o nutricionista, sobre todo si tienes alguna condición de salud.</p>
+ <p>© 2026 NutriLife</p>
+</footer>
+<button class="arriba" id="arriba" aria-label="Volver arriba">↑</button>
+
+<script>
+const recetas=[
+["🥤","Batido Nutritivo","1 plátano maduro • ½ taza de leche o bebida vegetal • 1 cucharada de avena • gotas de limón","Licúa todo por 30 segundos.","2 min"],
+["🥗","Ensalada Fresca","Lechuga • tomate • zanahoria • pepino • limón • sal • aceite","Lava, pica y mezcla. Adereza al momento.","10 min"],
+["🍚","Plato Equilibrado","Verduras • proteína a elección (pollo, huevo, legumbres) • arroz o papa","Mitad del plato verduras, un cuarto proteína, un cuarto carbohidrato.","20 min"],
+["🫘","Crema de Lentejas","1 taza de lentejas cocidas • cebolla • ajo • zanahoria • agua • sal","Sofríe las verduras, añade lentejas y agua, cocina 15 min y licúa.","25 min"],
+["🍎","Ensalada de Frutas","Frutas de temporada • jugo de naranja • hojitas de menta","Pica las frutas y mezcla con el jugo.","10 min"],
+["🥑","Tostadas con Aguacate","Pan integral • ½ aguacate • sal • semillas • limón","Machaca el aguacate con sal y limón y úntalo sobre el pan tostado.","5 min"],
+["🍲","Sopa de Verduras","Zanahoria • apio • cebolla • calabacín • papa • agua • sal • hierbas","Pica todo, hierve y cocina a fuego lento 25 min.","35 min"],
+["🥣","Yogur con Fruta y Nueces","Yogur natural sin azúcar • fruta picada • nueces o almendras • miel","Mezcla todo en un tazón.","1 min"],
+["🥚","Huevos con Espinaca","2 huevos • 1 taza de espinaca • ajo • sal • aceite","Saltea ajo y espinaca, añade los huevos batidos y revuelve 3 min.","8 min"],
+["🥬","Bowl de Quinua","Quinua cocida • frijoles • tomate • pepino • limón • aceite","Mezcla todo en un tazón y adereza con limón y aceite.","10 min"],
+["🍭","Paletas de Fruta","Pulpa de fruta natural • un poco de agua • moldes","Mezcla la fruta con agua, llena los moldes y congela 4 horas.","4 h"],
+["🥄","Pudín de Chía","3 cucharadas de chía • 1 taza de leche o bebida vegetal • fruta • miel","Mezcla chía con leche y miel; reposa en nevera toda la noche y añade fruta.","5 min + noche"],
+["🍳","Omelette de Verduras","2 huevos • pimiento • cebolla • tomate • sal • aceite","Saltea las verduras, añade los huevos batidos y cocina por ambos lados.","10 min"],
+["🐟","Pescado al Horno","Filete de pescado • limón • ajo • perejil • aceite • sal","Sazona y hornea a 180 °C unos 15–20 min, hasta que se desmenuce fácilmente.","25 min"],
+["🍗","Pollo a la Plancha","Pechuga de pollo • limón • ajo • sal • hojas verdes","Sazona el pollo, cocínalo bien hecho a la plancha y sírvelo con ensalada.","20 min"],
+["🍠","Camote Asado","Camote (batata) • aceite • canela o pimentón • sal","Corta en trozos, sazona y hornea a 200 °C unos 25 min.","30 min"],
+["🥞","Panqueques de Avena y Plátano","1 plátano • 1 huevo • ½ taza de avena","Tritura todo y cocina porciones en sartén antiadherente, 2 min por lado.","10 min"],
+["🍛","Guiso de Garbanzos","Garbanzos cocidos • tomate • cebolla • ajo • espinaca • comino","Sofríe, añade garbanzos y tomate, cocina 15 min y suma la espinaca al final.","25 min"],
+["🌮","Tacos de Lechuga","Hojas de lechuga • pollo o frijoles • tomate • cebolla • limón","Rellena las hojas con la proteína y las verduras picadas.","10 min"],
+["🥦","Brócoli con Ajo y Limón","Brócoli • ajo • limón • aceite de oliva","Cocina al vapor 5 min y saltea brevemente con ajo y limón.","10 min"],
+["🍌","Helado de Plátano","Plátanos congelados en rodajas • un chorrito de leche","Licúa hasta que quede cremoso. ¡Sin azúcar añadida!","5 min"],
+["🥙","Wrap de Hummus y Verduras","Tortilla integral • hummus • zanahoria rallada • pepino • lechuga","Unta el hummus, añade las verduras y enrolla.","5 min"],
+["🍅","Gazpacho Fácil","Tomates maduros • pepino • pimiento • ajo • aceite • vinagre • sal","Licúa todo y sirve bien frío.","10 min"],
+["🥜","Barritas de Avena y Dátiles","Avena • dátiles • nueces • canela","Tritura los dátiles con avena y nueces, presiona en un molde y refrigera 1 h.","15 min + 1 h"],
+["🍌","Avena Nocturna","½ taza de avena • ½ taza de leche o yogur • 1 plátano • canela","Mezcla en un frasco, deja reposar en nevera toda la noche y come frío.","5 min + noche"],
+["🌯","Wrap de Pollo y Verduras","Tortilla integral • pollo cocido desmenuzado • lechuga • tomate • yogur natural","Rellena la tortilla, enrolla y corta por la mitad.","10 min"],
+["🥔","Papas al Horno","Papas • aceite • romero o pimentón • sal","Corta en gajos, mezcla con aceite y especias y hornea a 200 °C por 30 min.","40 min"],
+["🍅","Sopa de Tomate","Tomates maduros • cebolla • ajo • albahaca • agua • sal","Cocina todo 15 min, licúa y vuelve a calentar.","25 min"],
+["🎃","Crema de Calabaza","Calabaza • cebolla • ajo • agua o caldo • sal • pimienta","Hierve las verduras hasta ablandar y licúa hasta que quede cremosa.","30 min"],
+["🍄","Champiñones al Ajillo","Champiñones • ajo • perejil • aceite • limón","Saltea los champiñones a fuego alto con ajo 5 min y termina con limón.","10 min"],
+["🌽","Ensalada de Maíz y Frijol","Maíz • frijoles cocidos • tomate • cebolla morada • cilantro • limón","Mezcla todo y adereza con limón y un poco de aceite.","10 min"],
+["🥕","Bastones con Hummus","Zanahoria • pepino • apio • hummus","Corta las verduras en bastones y sírvelas con hummus para mojar.","5 min"],
+["🫛","Hummus Casero","1 taza de garbanzos cocidos • 2 cucharadas de tahini • limón • ajo • aceite • sal","Licúa todo con un poco de agua hasta lograr una pasta suave.","10 min"],
+["🍆","Berenjena Rellena","Berenjenas • tomate • cebolla • queso fresco • aceite","Hornea las mitades 20 min, rellena con el sofrito y gratina unos minutos.","45 min"],
+["🥒","Agua de Pepino y Limón","1 pepino • 2 limones • menta • agua","Licúa pepino y limón con agua, cuela y sirve con hielo.","5 min"],
+["🍋","Agua de Limón y Menta","Limones • hojas de menta • agua • hielo","Exprime los limones, agrega la menta machacada y completa con agua fría.","5 min"],
+["🍓","Smoothie de Fresa y Yogur","Fresas • yogur natural • un poco de leche • hielo","Licúa todo hasta que quede espeso y cremoso.","3 min"],
+["🍍","Batido Verde","1 taza de espinaca • piña en trozos • ½ plátano • agua o leche","Licúa todo 1 minuto. No sabe a espinaca, ¡lo prometemos!","3 min"],
+["🍇","Brochetas de Fruta","Uvas • fresas • melón • piña • palitos de brocheta","Ensarta las frutas alternando colores. Ideal para fiestas y niños.","10 min"],
+["🥪","Sándwich Integral de Atún","Pan integral • atún en agua • yogur natural • lechuga • tomate","Mezcla el atún con el yogur y arma el sándwich con las verduras.","8 min"],
+["🍝","Pasta Integral con Verduras","Pasta integral • calabacín • tomate • ajo • albahaca • aceite","Cuece la pasta y saltea las verduras; mezcla y sirve.","20 min"],
+["🍛","Arroz Integral con Frijoles","Arroz integral cocido • frijoles • cebolla • comino • cilantro","Calienta los frijoles con cebolla y comino y sírvelos sobre el arroz.","15 min"],
+["🍜","Caldo de Pollo con Verduras","Pollo • zanahoria • apio • papa • cebolla • agua • sal","Cocina a fuego lento 40 min hasta que el pollo esté tierno.","50 min"],
+["🧆","Ensalada de Garbanzos","Garbanzos cocidos • pepino • tomate • cebolla morada • perejil • limón • aceite","Mezcla todo y deja reposar 10 min para que tome sabor.","15 min"],
+["🐠","Ensalada de Atún","Atún en agua • lechuga • tomate • maíz • limón • aceite de oliva","Escurre el atún, mezcla con las verduras y adereza.","8 min"],
+["🍏","Manzana Horneada con Canela","Manzanas • canela • pasas • un poco de miel","Quita el centro, rellena con pasas y canela y hornea a 180 °C por 25 min.","30 min"],
+["🍎","Compota de Manzana","Manzanas • agua • canela • limón","Cocina las manzanas en trozos con agua y canela 15 min y machaca.","20 min"],
+["🫐","Avena con Frutos Rojos","½ taza de avena • 1 taza de leche o agua • frutos rojos • miel","Cocina la avena 5 min y termina con los frutos rojos encima.","8 min"],
+["🌺","Té Helado de Hibisco","Flores de jamaica (hibisco) • agua • canela • hielo","Hierve las flores con canela 10 min, cuela, enfría y sirve con hielo.","20 min"],
+["🧀","Queso Fresco con Tomate","Queso fresco • tomate • albahaca • aceite de oliva • orégano","Rebana, alterna capas y aliña con aceite y orégano.","5 min"],
+["🍤","Salteado de Verduras con Tofu","Tofu firme • brócoli • zanahoria • pimiento • ajo • salsa de soja","Dora el tofu en cubos, agrega las verduras y saltea 5 min a fuego alto.","20 min"],
+["🌶️","Pimientos Rellenos","Pimientos • arroz cocido • carne magra o lentejas • tomate • cebolla","Rellena los pimientos y hornea a 180 °C por 30 min.","45 min"]
+];
+const norm=t=>t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const cats={D:'🌅 Desayunos',P:'🍽️ Platos',S:'🍲 Sopas',E:'🥗 Ensaladas',Q:'🍎 Postres y meriendas',B:'🥤 Bebidas'};
+const catDe={'Batido Nutritivo':'B','Ensalada Fresca':'E','Plato Equilibrado':'P','Crema de Lentejas':'S','Ensalada de Frutas':'Q','Tostadas con Aguacate':'D','Sopa de Verduras':'S','Yogur con Fruta y Nueces':'D','Huevos con Espinaca':'D','Bowl de Quinua':'P','Paletas de Fruta':'Q','Pudín de Chía':'D','Omelette de Verduras':'D','Pescado al Horno':'P','Pollo a la Plancha':'P','Camote Asado':'P','Panqueques de Avena y Plátano':'D','Guiso de Garbanzos':'P','Tacos de Lechuga':'P','Brócoli con Ajo y Limón':'P','Helado de Plátano':'Q','Wrap de Hummus y Verduras':'P','Gazpacho Fácil':'S','Barritas de Avena y Dátiles':'Q','Avena Nocturna':'D','Wrap de Pollo y Verduras':'P','Papas al Horno':'P','Sopa de Tomate':'S','Crema de Calabaza':'S','Champiñones al Ajillo':'P','Ensalada de Maíz y Frijol':'E','Bastones con Hummus':'Q','Hummus Casero':'Q','Berenjena Rellena':'P','Agua de Pepino y Limón':'B','Agua de Limón y Menta':'B','Smoothie de Fresa y Yogur':'B','Batido Verde':'B','Brochetas de Fruta':'Q','Sándwich Integral de Atún':'P','Pasta Integral con Verduras':'P','Arroz Integral con Frijoles':'P','Caldo de Pollo con Verduras':'S','Ensalada de Garbanzos':'E','Ensalada de Atún':'E','Manzana Horneada con Canela':'Q','Compota de Manzana':'Q','Avena con Frutos Rojos':'D','Té Helado de Hibisco':'B','Queso Fresco con Tomate':'Q','Salteado de Verduras con Tofu':'P','Pimientos Rellenos':'P'};
+let favs=[];
+try{favs=JSON.parse(localStorage.getItem('nutrilife-fav')||'[]')}catch(_){}
+const lista=document.getElementById('listaRecetas');
+lista.innerHTML=recetas.map(r=>`<article class="tarjeta" data-nombre="${r[1]}" data-cat="${catDe[r[1]]||'P'}" data-texto="${norm(r[1]+' '+r[2])}"><div class="icono">${r[0]}</div><h3>${r[1]}</h3><div class="ing"><strong>Ingredientes:</strong><br>${r[2]}</div><div class="pasos"><strong>Preparación:</strong> ${r[3]}</div><span class="tiempo">⏱ ${r[4]}</span><div class="acciones"><button class="fav" aria-label="Guardar ${r[1]} en favoritos" aria-pressed="${favs.includes(r[1])}">${favs.includes(r[1])?'❤️':'🤍'}</button><a class="wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('🥗 '+r[1]+'\nIngredientes: '+r[2]+'\nPreparación: '+r[3]+'\nMás recetas: '+location.href)}">📲 WhatsApp</a></div></article>`).join('');
+const vacio=document.getElementById('sinResultados');
+let catAct='';
+const buscar=document.getElementById('buscar'),filtros=document.getElementById('filtros');
+filtros.innerHTML=[['','Todas'],['F','❤️ Mis favoritos'],...Object.entries(cats)].map(([k,v])=>`<button class="chip" data-c="${k}" aria-pressed="${k===''}">${v}</button>`).join('');
+function filtrar(){
+ const q=norm(buscar.value.trim());let n=0;
+ lista.querySelectorAll('.tarjeta').forEach(t=>{const ok=t.dataset.texto.includes(q)&&(!catAct||(catAct==='F'?favs.includes(t.dataset.nombre):t.dataset.cat===catAct));t.hidden=!ok;if(ok)n++});
+ vacio.textContent=catAct==='F'&&!q?'Aún no tienes favoritos. Toca el 🤍 en una receta para guardarla.':'No se encontraron recetas. Intenta con otra palabra 🔍';
+ vacio.style.display=n?'none':'block';
+}
+buscar.addEventListener('input',filtrar);
+lista.addEventListener('click',e=>{const b=e.target.closest('.fav');if(!b)return;const n=b.closest('.tarjeta').dataset.nombre;
+ favs=favs.includes(n)?favs.filter(x=>x!==n):[...favs,n];
+ try{localStorage.setItem('nutrilife-fav',JSON.stringify(favs))}catch(_){}
+ const on=favs.includes(n);b.setAttribute('aria-pressed',on);b.textContent=on?'❤️':'🤍';filtrar()});
+filtros.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;catAct=b.dataset.c;filtros.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===b));filtrar()});
+
+const menu=document.getElementById('menuMovil'),btn=document.getElementById('menuBtn');
+btn.addEventListener('click',()=>{const a=menu.classList.toggle('abierto');btn.setAttribute('aria-expanded',a)});
+menu.addEventListener('click',e=>{if(e.target.tagName==='A'){menu.classList.remove('abierto');btn.setAttribute('aria-expanded','false')}});
+
+const habitos=[
+["💧","Toma agua","Unos 6–8 vasos al día; mejor agua que bebidas azucaradas."],
+["🥦","Come frutas y verduras","Procura incluirlas en cada comida."],
+["😴","Duerme bien","Los adultos suelen necesitar entre 7 y 9 horas."],
+["🍽️","Come despacio","Mastica con calma y escucha a tu cuerpo."],
+["🚫","Limita ultraprocesados","Reduce snacks, frituras y refrescos."],
+["🏃","Muévete a diario","Aunque sea una caminata de 20 minutos."]
+];
+const hoy=new Date().toLocaleDateString('en-CA');
+let marcados=[];
+try{const g=JSON.parse(localStorage.getItem('nutrilife-habitos')||'{}');if(g.dia===hoy)marcados=g.items||[]}catch(e){}
+const ul=document.getElementById('listaHabitos');
+ul.innerHTML=habitos.map((h,i)=>`<li><label><input type="checkbox" data-i="${i}"><span><b>${h[0]} ${h[1]}</b>${h[2]}</span></label></li>`).join('');
+const cajas=ul.querySelectorAll('input');
+function progreso(){
+ const n=[...cajas].filter(c=>c.checked).length;
+ document.getElementById('textoProgreso').textContent=n===habitos.length?'¡Excelente! Completaste todos tus hábitos de hoy 🎉':`${n} de ${habitos.length} completados`;
+ document.getElementById('barraProgreso').style.width=(n/habitos.length*100)+'%';
+}
+cajas.forEach(c=>{c.checked=marcados.includes(+c.dataset.i);c.addEventListener('change',()=>{
+ try{localStorage.setItem('nutrilife-habitos',JSON.stringify({dia:hoy,items:[...cajas].filter(x=>x.checked).map(x=>+x.dataset.i)}))}catch(e){}
+ progreso()})});
+progreso();
+
+const peso=document.getElementById('peso'),res=document.getElementById('resAgua');
+function calcAgua(){
+ const kg=parseFloat(peso.value);
+ if(!(kg>=20&&kg<=250)){res.textContent='Escribe un peso entre 20 y 250 kg.';return}
+ const l=kg*0.035,v=Math.round(l*4);
+ res.innerHTML=`Unos <strong>${l.toFixed(1).replace('.',',')} litros</strong> al día (≈ ${v} vasos de 250 ml)<small>Es una estimación general. Necesitas más con calor o ejercicio, y si tienes alguna condición de salud sigue la indicación de tu médico.</small>`;
+}
+document.getElementById('calcAgua').addEventListener('click',calcAgua);
+peso.addEventListener('keydown',e=>{if(e.key==='Enter')calcAgua()});
+
+const arriba=document.getElementById('arriba');
+addEventListener('scroll',()=>arriba.classList.toggle('ver',scrollY>600),{passive:true});
+arriba.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}}),{threshold:0,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.aparece').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
